@@ -3,20 +3,30 @@ import './lib/data/itemAliases';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { APIInteraction, GatewayDispatchEvents, InteractionResponseType, InteractionType, MahojiClient } from 'mahoji';
+import { APIInteraction, GatewayDispatchEvents, InteractionResponseType, InteractionType } from 'mahoji';
 import { SlashCommandResponse } from 'mahoji/dist/lib/types';
-import { join } from 'path';
+import Mitm from 'mitm';
 
 import { botToken, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { SILENT_ERROR } from './lib/constants';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { onStartup } from './mahoji/lib/events';
-import { postCommand } from './mahoji/lib/postCommand';
-import { preCommand } from './mahoji/lib/preCommand';
-import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
+import { makeMahojiClient } from './mahoji/lib/makeMahojiClient';
+
+process.on('unhandledRejection', error => {
+	console.log(error);
+	process.exit(1);
+});
+const mitm = Mitm();
+
+mitm.on('request', req => {
+	throw new Error(`Tried to make network request in tests: ${req.url}`);
+});
 
 Chart.register(ChartDataLabels);
+
+console.log(55_555_555_555_555_555);
 
 if (SENTRY_DSN) {
 	Sentry.init({
@@ -24,32 +34,7 @@ if (SENTRY_DSN) {
 	});
 }
 
-export const mahojiClient = new MahojiClient({
-	discordToken: botToken,
-	developmentServerID: '342983479501389826',
-	applicationID: '829398443821891634',
-	storeDirs: [join('dist', 'mahoji')],
-	handlers: {
-		preCommand: ({ command, interaction }) =>
-			preCommand({
-				abstractCommand: convertMahojiCommandToAbstractCommand(command),
-				userID: interaction.userID.toString(),
-				guildID: interaction.guildID.toString(),
-				channelID: interaction.channelID.toString()
-			}),
-		postCommand: ({ command, interaction, error }) =>
-			postCommand({
-				abstractCommand: convertMahojiCommandToAbstractCommand(command),
-				userID: interaction.userID.toString(),
-				guildID: interaction.guildID.toString(),
-				channelID: interaction.channelID.toString(),
-				args: interaction.options,
-				error,
-				msg: null,
-				isContinue: false
-			})
-	}
-});
+export const mahojiClient = makeMahojiClient();
 
 export const client = new OldSchoolBotClient(clientOptions);
 client.on('raw', async event => {
@@ -82,7 +67,12 @@ client.on('raw', async event => {
 		return result.interaction.respond(result);
 	}
 });
+console.log(process.env.NODE_ENV);
 client.on('ready', client.init);
 client.on('ready', onStartup);
-mahojiClient.start();
-client.login(botToken);
+console.log(process.env.NODE_ENV);
+if (1 > 2 && process.env.NODE_ENV !== 'test') {
+	console.error('NO NO NO NO');
+	mahojiClient.start();
+	client.login(botToken);
+}

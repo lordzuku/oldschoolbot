@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import {
 	MessageActionRow,
 	MessageActionRowOptions,
@@ -21,6 +21,9 @@ import { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { mahojiClient } from '../..';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { askCommand } from '../commands/ask';
+import { sellCommand } from '../commands/sell';
+import { smeltingCommand } from '../commands/smelt';
 import { AbstractCommand, AbstractCommandAttributes, CommandArgs } from './inhibitors';
 
 export function convertKlasaCommandToAbstractCommand(command: BotCommand): AbstractCommand {
@@ -130,3 +133,5 @@ export function allAbstractCommands(client: KlasaClient): AbstractCommand[] {
 		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)
 	];
 }
+
+export const allMahojiCommands = [askCommand, sellCommand, smeltingCommand];

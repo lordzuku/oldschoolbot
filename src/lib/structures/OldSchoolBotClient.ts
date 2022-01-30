@@ -38,7 +38,9 @@ export class OldSchoolBotClient extends Client {
 		return this._emojis;
 	}
 
-	public async login(token?: string) {
+	public async login(token?: string): Promise<any> {
+		if (1 > 0) return;
+		console.error('NOASFAOSDANFSOFDSAONSFDAONSAFDNO');
 		for (const guild of this.guilds.cache.values()) {
 			getGuildSettings(guild);
 		}

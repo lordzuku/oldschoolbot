@@ -6,7 +6,7 @@
 		"start": "yarn build && concurrently \"tsc -w -p src\" \"node dist/\"",
 		"test": "concurrently \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
 		"test:lint": "eslint \"{src,tests}/**/*.ts\"",
-		"test:unit": "jest --bail --runInBand --coverage",
+		"test:unit": "jest --bail --coverage",
 		"dev": "yarn wipedist && tsc -w -p src"
 	},
 	"dependencies": {
@@ -61,6 +61,7 @@
 		"@types/he": "^1.1.2",
 		"@types/jest": "^26.0.24",
 		"@types/math-expression-evaluator": "^1.2.2",
+		"@types/mitm": "^1.3.4",
 		"@types/node": "^14.18.9",
 		"@types/node-fetch": "^2.5.12",
 		"@types/pg": "^7.14.11",
@@ -71,6 +72,7 @@
 		"eslint": "^7.32.0",
 		"jest": "^27.4.7",
 		"jest-circus": "^27.4.6",
+		"mitm": "^1.7.2",
 		"prisma": "^3.8.1",
 		"rimraf": "^3.0.2",
 		"ts-jest": "^27.1.3",
