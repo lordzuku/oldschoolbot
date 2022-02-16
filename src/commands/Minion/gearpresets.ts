@@ -115,8 +115,12 @@ export default class extends BotCommand {
 		const unequipAllMessage = await unEquipAllCommand(msg, setup);
 		if (
 			!(unequipAllMessage instanceof KlasaMessage) ||
-			(!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you unequipped all items') &&
-				!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you have no items in your'))
+			(!(unequipAllmessage as unknown as KlasaMessage).content
+				.toLowerCase()
+				.includes('you unequipped all items') &&
+				!(unequipAllmessage as unknown as KlasaMessage).content
+					.toLowerCase()
+					.includes('you have no items in your'))
 		) {
 			return msg.channel.send(
 				`It was not possible to equip your **${preset.name}** preset on your ${setup} gear setup.`

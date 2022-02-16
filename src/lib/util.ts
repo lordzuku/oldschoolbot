@@ -1,7 +1,17 @@
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
-import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel, Util } from 'discord.js';
+import {
+	AnyChannel,
+	Channel,
+	Client,
+	DMChannel,
+	Guild,
+	MessageButton,
+	MessageOptions,
+	TextChannel,
+	Util
+} from 'discord.js';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import murmurHash from 'murmurhash';
@@ -278,7 +288,7 @@ export function normal(mu = 0, sigma = 1, nsamples = 6) {
  * Checks if the bot can send a message to a channel object.
  * @param channel The channel to check if the bot can send a message to.
  */
-export function channelIsSendable(channel: Channel | undefined | null): channel is TextChannel {
+export function channelIsSendable(channel: AnyChannel | undefined | null): channel is TextChannel {
 	if (!channel || (!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) || !channel.postable) {
 		return false;
 	}
@@ -496,7 +506,7 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 									new MessageButton()
 										.setLabel('')
 										.setStyle('SECONDARY')
-										.setCustomID(a.id)
+										.setCustomId(a.id)
 										.setEmoji(a.id)
 								)
 					  ]
@@ -514,7 +524,7 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 
 		collector.on('collect', async interaction => {
 			for (const action of PaginatedMessage.defaultActions) {
-				if (interaction.customID === action.id) {
+				if (interaction.customId === action.id) {
 					const previousIndex = display.index;
 
 					await action.run({

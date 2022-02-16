@@ -40,7 +40,7 @@ export default class extends Extendable {
 		}
 
 		try {
-			const selection = await confirmMessage.awaitMessageComponentInteraction({
+			const selection = await confirmMessage.awaitMessageComponent({
 				filter: i => {
 					if (i.user.id !== this.author.id) {
 						i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
@@ -50,10 +50,10 @@ export default class extends Extendable {
 				},
 				time: Time.Second * 15
 			});
-			if (selection.customID === 'CANCEL') {
+			if (selection.customId === 'CANCEL') {
 				return cancel('cancelled the confirmation');
 			}
-			if (selection.customID === 'CONFIRM') {
+			if (selection.customId === 'CONFIRM') {
 				return confirm();
 			}
 		} catch {

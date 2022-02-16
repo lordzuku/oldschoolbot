@@ -116,7 +116,7 @@ export default class extends BotCommand {
 				c.map(b => {
 					let button = new MessageButton()
 						.setLabel(showTrueNames ? b.name : '')
-						.setCustomID(b.id.toString())
+						.setCustomId(b.id.toString())
 						.setStyle(b.picked ? (b.name !== '0' ? 'SUCCESS' : 'DANGER') : 'SECONDARY');
 					if (!showTrueNames) {
 						button.setEmoji('680783258488799277');
@@ -164,7 +164,7 @@ export default class extends BotCommand {
 		});
 
 		collector.on('collect', async interaction => {
-			const pickedButton = buttonsToShow.find(b => b.id.toString() === interaction.customID)!;
+			const pickedButton = buttonsToShow.find(b => b.id.toString() === interaction.customId)!;
 			buttonsToShow[pickedButton.id].picked = true;
 			collector.stop('PICKED');
 			try {

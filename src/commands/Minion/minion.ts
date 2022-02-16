@@ -109,7 +109,7 @@ export default class MinionCommand extends BotCommand {
 						new MessageButton()
 							.setLabel(`Do ${tier.name} Clue`)
 							.setStyle('SECONDARY')
-							.setCustomID(tier.name)
+							.setCustomId(tier.name)
 							.setEmoji('365003979840552960')
 					);
 				}
@@ -122,7 +122,7 @@ export default class MinionCommand extends BotCommand {
 				new MessageButton()
 					.setLabel(`Repeat ${lastTrip.data.type} Trip`)
 					.setStyle('SECONDARY')
-					.setCustomID('REPEAT_LAST_TRIP')
+					.setCustomId('REPEAT_LAST_TRIP')
 			);
 		}
 
@@ -133,7 +133,7 @@ export default class MinionCommand extends BotCommand {
 		if (components.length > 0) {
 			const handleButtons = async () => {
 				try {
-					const selection = await sentMessage.awaitMessageComponentInteraction({
+					const selection = await sentMessage.awaitMessageComponent({
 						filter: i => {
 							if (i.user.id !== msg.author.id) {
 								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
@@ -152,13 +152,13 @@ export default class MinionCommand extends BotCommand {
 					if (selection.user.minionIsBusy) {
 						return selection.reply({ content: msg.author.minionStatus, ephemeral: true });
 					}
-					if (selection.customID === 'REPEAT_LAST_TRIP' && lastTrip) {
+					if (selection.customId === 'REPEAT_LAST_TRIP' && lastTrip) {
 						return lastTrip.continue(msg);
 					}
 					await runCommand({
 						message: msg,
 						commandName: 'mclue',
-						args: [selection.customID],
+						args: [selection.customId],
 						bypassInhibitors: true
 					});
 				} catch {

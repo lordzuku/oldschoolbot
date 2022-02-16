@@ -1,12 +1,7 @@
-import { SnowflakeUtil } from 'discord.js';
-import { Time } from 'e';
 import { KlasaClient } from 'klasa';
 
 import type PostgresProvider from '../providers/postgres';
 import { SupportServer } from './constants';
-
-const THRESHOLD = Time.Minute * 30;
-const OLD_SNOWFLAKE = SnowflakeUtil.generate(Date.now() - THRESHOLD);
 
 export async function cacheCleanup(client: KlasaClient) {
 	const queryRes = await (client.providers.default as PostgresProvider).runAll(
@@ -22,7 +17,7 @@ export async function cacheCleanup(client: KlasaClient) {
 	let users = 0;
 	let channels = 0;
 
-	for (const ch of client.channels.cache.array()) {
+	for (const ch of Array.from(client.channels.cache.values())) {
 		if (['voice', 'category', 'news', 'dm', 'stage'].includes(ch.type)) {
 			client.channels.cache.delete(ch.id);
 			channels++;
@@ -54,7 +49,6 @@ export async function cacheCleanup(client: KlasaClient) {
 		for (const [id, member] of guild.members.cache) {
 			if (shouldCacheUsers.has(member.user.id)) continue;
 			if (member === me) continue;
-			if (member.lastMessageID && member.lastMessageID > OLD_SNOWFLAKE) continue;
 			guildMembers++;
 			voiceStates++;
 			guild.voiceStates.cache.delete(id);

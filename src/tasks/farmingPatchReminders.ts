@@ -64,7 +64,7 @@ export default class extends Task {
 								new MessageButton()
 									.setLabel('Harvest & Replant')
 									.setStyle('PRIMARY')
-									.setCustomID('HARVEST')
+									.setCustomId('HARVEST')
 							);
 						}
 						// Always show disable reminders:
@@ -72,20 +72,20 @@ export default class extends Task {
 							new MessageButton()
 								.setLabel('Disable Reminders')
 								.setStyle('SECONDARY')
-								.setCustomID('DISABLE')
+								.setCustomId('DISABLE')
 						);
 						const message = await user.send({
 							content: `${user.username}, the ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
 							components: [farmingReminderButtons]
 						});
 						try {
-							const selection = await message.awaitMessageComponentInteraction({
+							const selection = await message.awaitMessageComponent({
 								time: Time.Minute * 5
 							});
 							message.edit({ components: [] });
 
 							// Check disable first so minion doesn't have to be free to disable reminders.
-							if (selection.customID === 'DISABLE') {
+							if (selection.customId === 'DISABLE') {
 								await user.settings.update(UserSettings.FarmingPatchReminders, false);
 								await user.send(
 									'Farming patch reminders have been disabled. You can enable them again using `+farm --enablereminders`.'
@@ -96,10 +96,10 @@ export default class extends Task {
 								selection.reply({ content: 'Your minion is busy.' });
 								return;
 							}
-							if (selection.customID === 'HARVEST') {
+							if (selection.customId === 'HARVEST') {
 								message.author = user;
 								runCommand({
-									message: message as KlasaMessage,
+									message: message as unknown as KlasaMessage,
 									commandName: 'farm',
 									args: [planted.name],
 									bypassInhibitors: true

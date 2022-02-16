@@ -107,7 +107,7 @@ export default class extends BotCommand {
 		}
 		const sentMessage = await msg.channel.send({ content: message, components: returnSuccessButtons });
 		try {
-			const selection = await sentMessage.awaitMessageComponentInteraction({
+			const selection = await sentMessage.awaitMessageComponent({
 				filter: i => {
 					if (i.user.id !== msg.author.id) {
 						i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
@@ -117,7 +117,7 @@ export default class extends BotCommand {
 				},
 				time: Time.Second * 15
 			});
-			switch (selection.customID) {
+			switch (selection.customId) {
 				case 'assaved': {
 					await runCommand({ message: msg, commandName: 'autoslay', args: [''], bypassInhibitors: true });
 					return;

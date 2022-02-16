@@ -1,8 +1,14 @@
 import { Prisma } from '@prisma/client';
-import { MessageButton, TextChannel } from 'discord.js';
+import { MessageActionRow, MessageButton, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
-import { ApplicationCommandOptionType, InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
+import {
+	ApplicationCommandOptionType,
+	ButtonStyle,
+	InteractionResponseType,
+	InteractionType,
+	MessageFlags
+} from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { CommandOption } from 'mahoji/dist/lib/types';
 
@@ -21,8 +27,6 @@ export function mahojiParseNumber({ input }: { input: string | undefined | null 
 }
 
 export const filterOption: CommandOption = {
-	// what if we allow this
-	// autoComplete: [filters.map(i => i.name)]
 	type: ApplicationCommandOptionType.String,
 	name: 'filter',
 	description: 'The filter you want to use.',
@@ -59,18 +63,18 @@ export async function handleMahojiConfirmation(
 	const confirmMessage = await channel.send({
 		content: str,
 		components: [
-			[
+			new MessageActionRow().addComponents([
 				new MessageButton({
 					label: 'Confirm',
-					style: 'PRIMARY',
+					style: ButtonStyle.Primary,
 					customID: 'CONFIRM'
 				}),
 				new MessageButton({
 					label: 'Cancel',
-					style: 'SECONDARY',
+					style: ButtonStyle.Secondary,
 					customID: 'CANCEL'
 				})
-			]
+			])
 		]
 	});
 
@@ -95,7 +99,7 @@ export async function handleMahojiConfirmation(
 	}
 
 	try {
-		const selection = await confirmMessage.awaitMessageComponentInteraction({
+		const selection = await confirmMessage.awaitMessageComponent({
 			filter: i => {
 				if (i.user.id !== userID.toString()) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
@@ -105,10 +109,10 @@ export async function handleMahojiConfirmation(
 			},
 			time: Time.Second * 10
 		});
-		if (selection.customID === 'CANCEL') {
+		if (selection.customId === 'CANCEL') {
 			return cancel();
 		}
-		if (selection.customID === 'CONFIRM') {
+		if (selection.customId === 'CONFIRM') {
 			return confirm();
 		}
 	} catch {

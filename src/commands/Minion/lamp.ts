@@ -1,5 +1,6 @@
 import { ArrayActions } from '@klasa/settings-gateway';
-import { MessageButton, MessageSelectMenu } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageSelectMenu } from 'discord.js';
+import { ButtonStyle } from 'discord-api-types';
 import { objectEntries, objectValues, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -227,26 +228,22 @@ export default class extends BotCommand {
 
 		const selectedMessage = await msg.channel.send({
 			content: 'Please, select your reward from the list below.',
-			components: [
-				[
-					new MessageSelectMenu({
-						type: 3,
-						customID: 'xpSelect',
-						options,
-						placeholder: 'Select a reward...'
-					})
-				],
-				[
-					new MessageButton({
-						customID: 'cancelXpSelection',
-						label: 'Cancel',
-						style: 'DANGER'
-					})
-				]
-			]
+			components: new MessageActionRow().addComponents([
+				new MessageSelectMenu({
+					type: 3,
+					customID: 'xpSelect',
+					options,
+					placeholder: 'Select a reward...'
+				}),
+				new MessageButton({
+					customID: 'cancelXpSelection',
+					label: 'Cancel',
+					style: ButtonStyle.Danger
+				})
+			])
 		});
 		try {
-			const selection = await selectedMessage.awaitMessageComponentInteraction({
+			const selection = await selectedMessage.awaitMessageComponent({
 				filter: i => {
 					if (i.user.id !== msg.author.id) {
 						i.reply({
@@ -264,7 +261,7 @@ export default class extends BotCommand {
 				await selectedMessage.edit({ components: [], content: msgAddXp[1] });
 				return msgAddXp[0];
 			}
-			if (selection.isButton() && selection.customID === 'cancelXpSelection') {
+			if (selection.isButton() && selection.customId === 'cancelXpSelection') {
 				await selectedMessage.edit({ components: [], content: 'Cancelled XP selection. No items were used.' });
 				return false;
 			}
